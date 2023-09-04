@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sleeper-api-py"
+version = "0.0.1"
+authors = [
+  { name="Zach Taliaferro" },
+]
+description = "A fault tolerant wrapper for the Sleeper Fantasty Football API."
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "requests"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
