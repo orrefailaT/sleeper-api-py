@@ -62,8 +62,10 @@ class SleeperAPI:
         return leagues_data
 
     def get_user_leagues(
-        self, user_id: Union[str, int], season: Union[str, int]
+        self, user_id: Union[str, int], season: Union[str, int, None] = None
     ) -> Optional[list[dict[str, Any]]]:
+        if season is None:
+            season = self._nfl_state["season"]  # default to current season
         url = f"{self._base_url}/user/{user_id}/leagues/nfl/{season}"
         return self._session.call(url, log_null=False)
 
@@ -97,12 +99,9 @@ class SleeperAPI:
         url = f"{self._base_url}/league/{league_id}/transactions/{week}"
         return self._session.call(url, log_null=False)
 
-    def get_season_transactions(
-        self, league_id: str, season: str
-    ) -> list[dict[str, Any]]:
-        week_count = self._get_week_count(season)
+    def get_season_transactions(self, league_id: str) -> list[dict[str, Any]]:
         transactions_list = []
-        for week in range(1, week_count + 1):
+        for week in range(1, 19):
             transactions = self.get_transactions(league_id, week)
             if transactions:
                 transactions_list += transactions
@@ -112,18 +111,19 @@ class SleeperAPI:
         url = f"{self._base_url}/league/{league_id}/matchups/{week}"
         return self._session.call(url, log_null=True)
 
-    def get_season_matchups(
-        self, league_id: str, season: str
-    ) -> dict[int, list[dict[str, Any]]]:
+    def get_season_matchups(self, league_id: str) -> dict[int, list[dict[str, Any]]]:
         matchups_dict = {}
-        week_count = self._get_week_count(season)
-        for week in range(1, week_count + 1):
+        for week in range(1, 19):
             matchups = self.get_matchups(league_id, week)
             if matchups:
                 matchups_dict[week] = matchups
         return matchups_dict
 
-    def get_user_drafts(self, user_id: str, season: str) -> Optional[list[dict]]:
+    def get_user_drafts(
+        self, user_id: str, season: Union[str, int, None] = None
+    ) -> Optional[list[dict]]:
+        if season is None:
+            season = self._nfl_state["season"]
         url = f"{self._base_url}/user/{user_id}/drafts/nfl/{season}"
         return self._session.call(url, log_null=True)
 
