@@ -34,11 +34,12 @@ class SleeperAPI:
         else:
             return 1
 
-    def get_nfl_state(self) -> dict:
+    def get_nfl_state(self) -> dict[str, Any]:
         url = f"{self._base_url}/state/nfl"
         data = self._session.call(url, log_null=True)
         if not (data and isinstance(data, dict)):
             raise ValueError("Failed to get NFL State.")
+        self._nfl_state = data
         return data
 
     def get_league(self, league_id: str) -> Optional[dict[str, Any]]:
